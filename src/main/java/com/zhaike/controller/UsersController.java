@@ -6,6 +6,7 @@ import com.zhaike.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -23,6 +24,7 @@ public class UsersController {
         return "hello";
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping("/login")
     @ResponseBody
     public List<Users> login(String uname,String password){

@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhaike.mapping.CourseMapper">
+  <resultMap id="BaseResultMap" type="com.zhaike.entity.Course">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="directionId" jdbcType="INTEGER" property="directionid" />
+    <result column="classifyId" jdbcType="INTEGER" property="classifyid" />
+    <result column="raleaseTime" jdbcType="TIMESTAMP" property="raleasetime" />
+    <result column="viewCount" jdbcType="INTEGER" property="viewcount" />
+    <result column="courseCover" jdbcType="VARCHAR" property="coursecover" />
+    <result column="validDay" jdbcType="VARCHAR" property="validday" />
+    <result column="lecturerId" jdbcType="INTEGER" property="lecturerid" />
+    <result column="describe" jdbcType="VARCHAR" property="describe" />
+    <result column="free" jdbcType="VARCHAR" property="free" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, directionId, classifyId, raleaseTime, viewCount, courseCover, validDay, lecturerId, 
+    describe, free, price
+  </sql>
+  <select id="selectByExample" parameterType="com.zhaike.entity.CourseExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from course
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+
+
+  <resultMap id="allcourse" type="com.zhaike.entity.Course" extends="BaseResultMap">
+    <collection property="chapters" ofType="com.zhaike.entity.Chapter" select="selectAllChapter"
+    column="{courseId=id}">
+
+    </collection>
+  </resultMap>
+
+  <select id="selectAllCourse" resultMap="allcourse">
+    SELECT * FROM course;
+  </select>
+
+  <select id="selectAllChapter" resultMap="com.zhaike.mapping.ChapterMapper.BaseResultMap">
+    SELECT * FROM chapter WHERE courseId=#{courseId};
+  </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from course
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from course
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zhaike.entity.CourseExample">
+    delete from course
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zhaike.entity.Course">
+    insert into course (id, directionId, classifyId, 
+      raleaseTime, viewCount, courseCover, 
+      validDay, lecturerId, describe, 
+      free, price)
+    values (#{id,jdbcType=INTEGER}, #{directionid,jdbcType=INTEGER}, #{classifyid,jdbcType=INTEGER}, 
+      #{raleasetime,jdbcType=TIMESTAMP}, #{viewcount,jdbcType=INTEGER}, #{coursecover,jdbcType=VARCHAR}, 
+      #{validday,jdbcType=VARCHAR}, #{lecturerid,jdbcType=INTEGER}, #{describe,jdbcType=VARCHAR}, 
+      #{free,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zhaike.entity.Course">
+    insert into course
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="directionid != null">
+        directionId,
+      </if>
+      <if test="classifyid != null">
+        classifyId,
+      </if>
+      <if test="raleasetime != null">
+        raleaseTime,
+      </if>
+      <if test="viewcount != null">
+        viewCount,
+      </if>
+      <if test="coursecover != null">
+        courseCover,
+      </if>
+      <if test="validday != null">
+        validDay,
+      </if>
+      <if test="lecturerid != null">
+        lecturerId,
+      </if>
+      <if test="describe != null">
+        describe,
+      </if>
+      <if test="free != null">
+        free,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="directionid != null">
+        #{directionid,jdbcType=INTEGER},
+      </if>
+      <if test="classifyid != null">
+        #{classifyid,jdbcType=INTEGER},
+      </if>
+      <if test="raleasetime != null">
+        #{raleasetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viewcount != null">
+        #{viewcount,jdbcType=INTEGER},
+      </if>
+      <if test="coursecover != null">
+        #{coursecover,jdbcType=VARCHAR},
+      </if>
+      <if test="validday != null">
+        #{validday,jdbcType=VARCHAR},
+      </if>
+      <if test="lecturerid != null">
+        #{lecturerid,jdbcType=INTEGER},
+      </if>
+      <if test="describe != null">
+        #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="free != null">
+        #{free,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zhaike.entity.CourseExample" resultType="java.lang.Long">
+    select count(*) from course
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update course
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.directionid != null">
+        directionId = #{record.directionid,jdbcType=INTEGER},
+      </if>
+      <if test="record.classifyid != null">
+        classifyId = #{record.classifyid,jdbcType=INTEGER},
+      </if>
+      <if test="record.raleasetime != null">
+        raleaseTime = #{record.raleasetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.viewcount != null">
+        viewCount = #{record.viewcount,jdbcType=INTEGER},
+      </if>
+      <if test="record.coursecover != null">
+        courseCover = #{record.coursecover,jdbcType=VARCHAR},
+      </if>
+      <if test="record.validday != null">
+        validDay = #{record.validday,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lecturerid != null">
+        lecturerId = #{record.lecturerid,jdbcType=INTEGER},
+      </if>
+      <if test="record.describe != null">
+        describe = #{record.describe,jdbcType=VARCHAR},
+      </if>
+      <if test="record.free != null">
+        free = #{record.free,jdbcType=VARCHAR},
+      </if>
+      <if test="record.price != null">
+        price = #{record.price,jdbcType=DOUBLE},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update course
+    set id = #{record.id,jdbcType=INTEGER},
+      directionId = #{record.directionid,jdbcType=INTEGER},
+      classifyId = #{record.classifyid,jdbcType=INTEGER},
+      raleaseTime = #{record.raleasetime,jdbcType=TIMESTAMP},
+      viewCount = #{record.viewcount,jdbcType=INTEGER},
+      courseCover = #{record.coursecover,jdbcType=VARCHAR},
+      validDay = #{record.validday,jdbcType=VARCHAR},
+      lecturerId = #{record.lecturerid,jdbcType=INTEGER},
+      describe = #{record.describe,jdbcType=VARCHAR},
+      free = #{record.free,jdbcType=VARCHAR},
+      price = #{record.price,jdbcType=DOUBLE}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zhaike.entity.Course">
+    update course
+    <set>
+      <if test="directionid != null">
+        directionId = #{directionid,jdbcType=INTEGER},
+      </if>
+      <if test="classifyid != null">
+        classifyId = #{classifyid,jdbcType=INTEGER},
+      </if>
+      <if test="raleasetime != null">
+        raleaseTime = #{raleasetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viewcount != null">
+        viewCount = #{viewcount,jdbcType=INTEGER},
+      </if>
+      <if test="coursecover != null">
+        courseCover = #{coursecover,jdbcType=VARCHAR},
+      </if>
+      <if test="validday != null">
+        validDay = #{validday,jdbcType=VARCHAR},
+      </if>
+      <if test="lecturerid != null">
+        lecturerId = #{lecturerid,jdbcType=INTEGER},
+      </if>
+      <if test="describe != null">
+        describe = #{describe,jdbcType=VARCHAR},
+      </if>
+      <if test="free != null">
+        free = #{free,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zhaike.entity.Course">
+    update course
+    set directionId = #{directionid,jdbcType=INTEGER},
+      classifyId = #{classifyid,jdbcType=INTEGER},
+      raleaseTime = #{raleasetime,jdbcType=TIMESTAMP},
+      viewCount = #{viewcount,jdbcType=INTEGER},
+      courseCover = #{coursecover,jdbcType=VARCHAR},
+      validDay = #{validday,jdbcType=VARCHAR},
+      lecturerId = #{lecturerid,jdbcType=INTEGER},
+      describe = #{describe,jdbcType=VARCHAR},
+      free = #{free,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
